@@ -1,0 +1,66 @@
+export EDITOR=/usr/bin/nvim
+export PATH=$PATH:/home/michel/.local/bin
+
+HISTSIZE=1000000
+SAVEHIST=1000000
+HISTFILE="$HOME/.zsh_history"
+
+source /usr/share/zsh/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+
+# Use lf to switch directories and bind it to ctrl-o
+lfcd () {
+    tmp="$(mktemp -uq)"
+    trap 'rm -f $tmp >/dev/null 2>&1 && trap - HUP INT QUIT TERM PWR EXIT' HUP INT QUIT TERM PWR EXIT
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+bindkey -s '^o' '^ulfcd\n'
+
+bindkey -s '^a' '^ubc -lq\n'
+
+bindkey -s '^f' '^ucd "$(dirname "$(fzf)")"\n'
+
+bindkey '^[[P' delete-char
+
+eval "$(starship init zsh)"
+alias \
+	ka="killall" \
+	g="git" \
+	trem="transmission-remote" \
+	YT="youtube-viewer" \
+	sdn="shutdown -h now" \
+	e="$EDITOR" \
+	v="$EDITOR" \
+	p="pacman" \
+	z="zathura" \
+  ip='ip --color=auto' \
+
+alias \
+	c="clear" \
+	n="neofetch" \
+	q='exit'\
+	weather="curl wttr.in"\
+	tempo='curl wttr.in'\
+	n="neofetch"\
+	ff="fastfetch"\
+	cache='rm ~/.cache/*plasma* ; killall plasmashell && kstart5 plasmashell'\
+	pf="echo pfetch && pfetch"\
+	config="/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"\
+	aopa='alacritty msg config window.opacity=1'\
+	data='sudo umount /dev/sdb1 && sudo mount /dev/sdb1 -o,rw'\
+	datasteam='sudo umount /dev/sdb1 && sudo mount /dev/sdb1 -o,uid=1000,gid=1000,rw'\
+	vim='nvim'\
+	j='steam -applaunch 440 +map jump_mireal'\
+  reflector='sudo reflector --score 30 --sort rate --protocol https --verbose --save /etc/pacman.d/mirrorlist'\
+  ls='ls --color=auto'\
+  ll='ls -lha --g'\
+  l='ls -lh --g'\
+  g='/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME'
+pfetch
+eval "$(starship init zsh)"
+
